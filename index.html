@@ -192,12 +192,14 @@
 
             <!-- Output Box -->
             <div class="flex flex-col gap-3">
-                <label for="output-text" class="text-rune-gold font-bold uppercase tracking-wider text-sm flex items-center justify-between">
-                    <span>Traduzione Vakongü</span>
-                    <button type="button" onclick="copyOutput()" id="copy-btn" class="btn-viking px-4 py-2 rounded text-xs font-bold cursor-pointer">Copia</button>
+                <label for="output-text" class="text-rune-gold font-bold uppercase tracking-wider text-sm">
+                    Traduzione Vakongü
                 </label>
                 <textarea id="output-text" rows="5" readonly placeholder="La traduzione comparirà qui..." class="w-full bg-rune-wood text-rune-gold font-bold placeholder-rune-iron p-4 rounded-lg rune-border focus:outline-none font-vakongu text-base resize-y selection:bg-amber-700 selection:text-white"></textarea>
-                            </div>
+                <div class="flex justify-end items-center">
+                    <button type="button" onclick="copyOutput()" id="copy-btn" class="btn-viking px-5 py-3 rounded-lg text-sm font-bold cursor-pointer">Copia</button>
+                </div>
+            </div>
 
         </div>
 
