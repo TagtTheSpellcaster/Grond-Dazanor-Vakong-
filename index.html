@@ -367,12 +367,20 @@
                     .replace(/(?<=\u0004)i/g, '\u0008')
                     .replace(/c(?=[ei])/g, '\u0006')  // c dolce
                     .replace(/g(?=[ei])/g, '\u0007') // g dolce
+                    // La i di ci/gi resta scritta, ma occupa comunque una posizione vocalica.
+                    .replace(/(?<=\u0006)i/g, '\u0009')
+                    .replace(/(?<=\u0007)i/g, '\u0009')
                     .replace(/c(?=[aouàòù])/g, 'k')  // c dura
                     .replace(/g(?=[aouàòù])/g, '\u0005'); // g dura
 
                 // Conta le vocali. La i del gruppo gli interno non è vocalica.
                 const vowelPositions = [];
                 for (let i = 0; i < w.length; i++) {
+                    if (w[i] === '\u0009') {
+                        // La i di appoggio conta nella sequenza, ma non viene trasformata.
+                        vowelPositions.push(i);
+                        continue;
+                    }
                     if (!isVowelChar(w[i])) continue;
                     if (w[i] === 'i' && i > 0 && w[i - 1] === 'g' && w[i + 1] === 'l') continue;
                     vowelPositions.push(i);
@@ -383,8 +391,13 @@
                 for (let i = 0; i < vowelPositions.length; i++) {
                     const pos = vowelPositions[i];
                     const sourceVowel = chars[pos];
+                    // La i ortografica conserva il proprio valore, pur occupando il suo posto.
+                    if (sourceVowel === '\u0009') continue;
                     let target = targets[i];
-                    if (sourceVowel === 'a' && target === 'a') target = 'o';
+                    // La a immediatamente successiva alla i di appoggio in ci/gi
+                    // non subisce l'inversione a -> o della regola 4.
+                    const followsSoftCiGi = pos > 0 && chars[pos - 1] === '\u0009';
+                    if (sourceVowel === 'a' && target === 'a' && !followsSoftCiGi) target = 'o';
                     else if (sourceVowel === 'o' && target === 'o') target = 'a';
                     chars[pos] = target;
                 }
@@ -397,12 +410,14 @@
                     .replace(/\u0005/g, 'g')
                     .replace(/\u0008/g, 'i');
 
-                // Segnaposto per c/g dolci: la vocale che segue determina se
-                // mantenere una i esplicita per conservare il suono palatale.
-                result = result.replace(/\u0006(?=[aouü])/g, 'ci')
+                // Ripristina la i ortografica di ci/gi senza duplicarla.
+                result = result.replace(/\u0006\u0009/g, 'ci')
+                               .replace(/\u0007\u0009/g, 'gi')
+                               .replace(/\u0006(?=[aouü])/g, 'ci')
                                .replace(/\u0007(?=[aouü])/g, 'gi')
                                .replace(/\u0006/g, 'c')
-                               .replace(/\u0007/g, 'g');
+                               .replace(/\u0007/g, 'g')
+                               .replace(/\u0009/g, 'i');
 
                 // Contrai solo una doppia identica creata dalla conversione.
                 if (!sourceHasDoubleVowel) result = result.replace(/([aeiouü])\1+/g, '$1');
