@@ -7,7 +7,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for Rustic/Viking aesthetic -->
-    <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Cinzel:wght@400;600;700;900&family=Libre+Baskerville:wght@400;700&family=MedievalSharp&family=Special+Elite&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Cinzel:wght@400;600;700;900&family=Libre+Baskerville:wght@400;700&family=MedievalSharp&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -15,7 +15,7 @@
                     fontFamily: {
                         viking: ['"MedievalSharp"', 'serif'],
                         cinzel: ['"Cinzel"', 'serif'],
-                        mono: ['"Special Elite"', 'monospace'],
+                        mono: ['"Libre Baskerville"', 'serif'],
                         italian: ['"Libre Baskerville"', 'serif'],
                         vakongu: ['"Caesar Dressing"', 'cursive'],
                     },
@@ -89,7 +89,7 @@
             color: #c9b88e;
             padding: .55rem .85rem;
             border-radius: .4rem;
-            font: 600 .7rem "Special Elite", monospace;
+            font: 600 .8rem "Libre Baskerville", serif;
             letter-spacing: .04em;
             transition: all .18s ease;
         }
@@ -141,9 +141,6 @@
 
     <!-- Header / Banner -->
     <header class="w-full py-8 px-4 text-center border-b border-rune-border bg-rune-wood/80 backdrop-blur-md relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center font-viking text-9xl tracking-widest text-rune-gold">
-            ᚠᚢᚦᚨᚱᚲ
-        </div>
         <div class="max-w-4xl mx-auto relative z-10">
             <h1 class="text-4xl sm:text-6xl font-vakongu font-bold text-rune-gold gold-glow tracking-wide uppercase mb-2">
                 Grondü Dazanorü Vakongü
@@ -157,19 +154,15 @@
     <!-- Main Content Area -->
     <main class="flex-grow max-w-5xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-8 my-auto">
 
-        <!-- Controls / Rules Info Toggle -->
-        <div class="flex justify-between items-center bg-rune-panel p-4 rounded-lg rune-border">
-            <div class="flex items-center gap-3">
-                <span class="text-2xl">🛡️</span>
-                <span class="text-rune-gold font-bold text-sm sm:text-base uppercase tracking-wider font-cinzel">Regno di Vakongü</span>
-            </div>
-            <button onclick="toggleRules()" id="rules-toggle-btn" class="text-xs sm:text-sm font-mono text-rune-ironlight hover:text-rune-gold transition underline cursor-pointer">
-                📜 Mostra Regole Antiche
+        <!-- Accesso alle regole -->
+        <div class="flex justify-end">
+            <button type="button" onclick="toggleRules()" id="rules-toggle-btn" class="btn-viking px-5 py-2 rounded-lg text-sm font-bold cursor-pointer">
+                Regole di traduzione
             </button>
         </div>
 
         <!-- Rules Accordion (Hidden by default) -->
-        <div id="rules-box" class="hidden bg-rune-panel/95 p-6 rounded-lg rune-border text-rune-parchment font-mono text-xs sm:text-sm space-y-3 leading-relaxed border-l-4 border-l-rune-gold">
+        <div id="rules-box" class="hidden bg-rune-panel/95 p-6 rounded-lg rune-border text-rune-parchment font-italian text-xs sm:text-sm space-y-3 leading-relaxed border-l-4 border-l-rune-gold">
             <h3 class="font-bold text-rune-gold text-base font-cinzel uppercase tracking-wider mb-2">Le Leggi di Pronuncia Vichinga:</h3>
             <ul class="list-disc pl-5 space-y-2 text-rune-ironlight">
                 <li><strong class="text-rune-parchment">Regola 1 & 3:</strong> Sostituzione vocalica ciclica (<code class="text-rune-gold">a - o - ü</code>). Se ci sono 2 vocali, la sequenza è <code class="text-rune-gold">o - ü</code> (es. <span class="text-rune-gold">casa → cosü</span>). Se 3 vocali, <code class="text-rune-gold">a - o - ü</code> (es. <span class="text-rune-gold">vikingo → vakongü</span>).</li>
@@ -188,34 +181,23 @@
             <!-- Input Box -->
             <div class="flex flex-col gap-3">
                 <label for="input-text" class="text-rune-gold font-bold uppercase tracking-wider text-sm flex items-center justify-between">
-                    <span>⚔️ Testo in Italiano</span>
-                    <span class="text-xs text-rune-ironlight font-mono">Inserisci frase</span>
+                    <span>Testo in Italiano</span>
                 </label>
                 <textarea id="input-text" rows="5" placeholder="Scrivi qui la tua frase in italiano (es. Vikingo, tavolo, casa)..." class="w-full bg-rune-wood text-rune-parchment placeholder-rune-iron p-4 rounded-lg rune-border focus:outline-none focus:border-rune-gold transition font-italian text-base resize-y"></textarea>
                 <div class="flex justify-between items-center">
-                    <button onclick="clearText()" class="text-xs font-mono text-rune-iron hover:text-rune-ironlight transition cursor-pointer">
-                        Cancella testo
-                    </button>
-                    <button onclick="translateText()" class="btn-viking px-8 py-3 rounded-lg font-bold uppercase tracking-wider text-sm font-cinzel flex items-center gap-2 cursor-pointer">
-                        <span>⚡ Traduci</span>
-                    </button>
+                    <button type="button" onclick="clearText()" class="btn-viking px-5 py-3 rounded-lg text-sm font-bold cursor-pointer">Cancella</button>
+                    <button type="button" onclick="translateText()" class="btn-viking px-8 py-3 rounded-lg font-bold uppercase tracking-wider text-sm font-cinzel cursor-pointer">Traduci</button>
                 </div>
             </div>
 
             <!-- Output Box -->
             <div class="flex flex-col gap-3">
                 <label for="output-text" class="text-rune-gold font-bold uppercase tracking-wider text-sm flex items-center justify-between">
-                    <span>🛡️ Traduzione Vakongü</span>
-                    <button onclick="copyOutput()" id="copy-btn" class="text-xs font-mono text-rune-gold hover:text-rune-goldlight transition flex items-center gap-1 cursor-pointer">
-                        📋 Copia
-                    </button>
+                    <span>Traduzione Vakongü</span>
+                    <button type="button" onclick="copyOutput()" id="copy-btn" class="btn-viking px-4 py-2 rounded text-xs font-bold cursor-pointer">Copia</button>
                 </label>
                 <textarea id="output-text" rows="5" readonly placeholder="La traduzione comparirà qui..." class="w-full bg-rune-wood text-rune-gold font-bold placeholder-rune-iron p-4 rounded-lg rune-border focus:outline-none font-vakongu text-base resize-y selection:bg-amber-700 selection:text-white"></textarea>
-                <div class="flex justify-between items-center">
-                    <span class="text-xs font-mono text-rune-ironlight" id="status-msg">Pronto alla battaglia linguistica.</span>
-                    <span class="text-xs font-mono text-rune-iron">Alfabeto a - o - ü</span>
-                </div>
-            </div>
+                            </div>
 
         </div>
 
@@ -223,7 +205,7 @@
         <section class="bg-rune-panel p-4 sm:p-6 rounded-lg rune-border flex flex-col gap-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <label for="rune-alphabet" class="text-rune-gold font-bold uppercase tracking-wider text-sm">
-                    ᚠ Traslitterazione runica
+                    Traslitterazione runica
                 </label>
                 <div class="flex flex-wrap items-center gap-2">
                     <span class="text-xs font-mono text-rune-ironlight mr-1">Alfabeto</span>
@@ -231,34 +213,15 @@
                         <button type="button" id="elder-button" class="rune-choice" aria-pressed="true" onclick="setRuneAlphabet('elder')">Elder Futhark</button>
                         <button type="button" id="younger-button" class="rune-choice" aria-pressed="false" onclick="setRuneAlphabet('younger')">Younger Futhark</button>
                     </div>
-                    <button onclick="copyRunes()" class="text-xs font-mono text-rune-gold hover:text-rune-goldlight transition cursor-pointer px-2 py-2">
-                        📋 Copia testo
-                    </button>
-                    <button onclick="copyRunesAsImage()" class="btn-viking text-xs font-mono px-3 py-2 rounded cursor-pointer">
-                        ▧ Copia come immagine
-                    </button>
+                    <button type="button" onclick="copyRunes()" class="btn-viking text-xs px-4 py-2 rounded cursor-pointer">Copia testo</button>
+                    <button type="button" onclick="copyRunesAsImage()" class="btn-viking text-xs px-4 py-2 rounded cursor-pointer">Copia come immagine</button>
                 </div>
             </div>
             <div id="rune-output" class="runic-output stone-surface w-full p-4 sm:p-6 rounded-lg" aria-live="polite" aria-label="Traslitterazione in rune">La traslitterazione comparirà qui...</div>
             <p class="text-xs font-mono text-rune-ironlight">Conversione grafica del testo Vakongü in caratteri Unicode. La scelta dell’alfabeto non modifica la traduzione.</p>
         </section>
 
-        <!-- Quick Examples Pill Bar -->
-        <div class="bg-rune-panel p-4 rounded-lg rune-border flex flex-col gap-3">
-            <span class="text-xs font-mono uppercase tracking-widest text-rune-ironlight">Esempi rapidi dal saggio vichingo:</span>
-            <div class="flex flex-wrap gap-2">
-                <button onclick="loadExample('vikingo')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">vikingo</button>
-                <button onclick="loadExample('ritirata')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">ritirata</button>
-                <button onclick="loadExample('telefonateglielo')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">telefonateglielo</button>
-                <button onclick="loadExample('glicine')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">glicine</button>
-                <button onclick="loadExample('casa')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">casa</button>
-                <button onclick="loadExample('melma')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">melma</button>
-                <button onclick="loadExample('tavolo')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">tavolo</button>
-                <button onclick="loadExample('rotondo')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">rotondo</button>
-                <button onclick="loadExample('massimo')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">massimo</button>
-                <button onclick="loadExample('per')" class="bg-rune-wood hover:bg-rune-border text-rune-parchment text-xs font-mono px-3 py-1.5 rounded border border-rune-border transition cursor-pointer">per (monosillaba)</button>
-            </div>
-        </div>
+       </div>
 
     </main>
 
@@ -268,9 +231,8 @@
     </footer>
 
     <!-- Notification Toast / Custom Message Box -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-rune-panel text-rune-gold px-5 py-3 rounded-lg rune-border shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 font-mono text-sm z-50 flex items-center gap-2">
-        <span id="toast-icon">✨</span>
-        <span id="toast-msg">Testo copiato negli appunti!</span>
+    <div id="toast" class="fixed bottom-5 right-5 bg-rune-panel text-rune-gold px-5 py-3 rounded-lg rune-border shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 font-mono text-sm z-50">
+        <span id="toast-msg"></span>
     </div>
 
     <!-- JavaScript Translation Engine -->
@@ -281,10 +243,10 @@
             const btn = document.getElementById('rules-toggle-btn');
             if (box.classList.contains('hidden')) {
                 box.classList.remove('hidden');
-                btn.textContent = '📜 Nascondi Regole Antiche';
+                btn.textContent = 'Chiudi regole';
             } else {
                 box.classList.add('hidden');
-                btn.textContent = '📜 Mostra Regole Antiche';
+                btn.textContent = 'Regole di traduzione';
             }
         }
 
@@ -299,18 +261,14 @@
             document.getElementById('input-text').value = '';
             document.getElementById('output-text').value = '';
             updateRunes();
-            showToast('Caselle ripulite', '🧹');
+            showToast('Caselle ripulite');
         }
 
         // Show toast notification
-        function showToast(msg, icon = '✨') {
+        function showToast(msg) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toast-msg');
-            const toastIcon = document.getElementById('toast-icon');
-            
             toastMsg.textContent = msg;
-            toastIcon.textContent = icon;
-            
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
@@ -321,16 +279,16 @@
         function copyOutput() {
             const outputBox = document.getElementById('output-text');
             if (!outputBox.value) {
-                showToast('Nessun testo da copiare!', '⚠️');
+                showToast('Nessun testo da copiare!');
                 return;
             }
             outputBox.select();
             outputBox.setSelectionRange(0, 99999);
             try {
                 document.execCommand('copy');
-                showToast('Traduzione copiata negli appunti!', '📋');
+                showToast('Traduzione copiata negli appunti!');
             } catch (err) {
-                showToast('Impossibile copiare automaticamente', '❌');
+                showToast('Impossibile copiare automaticamente');
             }
         }
 
@@ -484,7 +442,7 @@
 
         async function copyRunesAsImage() {
             if (!document.getElementById('output-text').value) {
-                showToast('Nessuna runa da esportare!', '⚠️');
+                showToast('Nessuna runa da esportare!');
                 return;
             }
             try {
@@ -492,7 +450,7 @@
                 if (navigator.clipboard && window.ClipboardItem) {
                     try {
                         await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-                        showToast('Immagine runica copiata negli appunti!', '▧');
+                        showToast('Immagine runica copiata negli appunti!');
                         return;
                     } catch (clipboardError) {
                         // Se la clipboard immagini non è disponibile, passa al download.
@@ -506,16 +464,16 @@
                 link.click();
                 link.remove();
                 setTimeout(() => URL.revokeObjectURL(url), 1500);
-                showToast('PNG scaricata: puoi inserirla nel programma di grafica.', '▧');
+                showToast('PNG scaricata: puoi inserirla nel programma di grafica.');
             } catch (error) {
-                showToast(error.message === 'empty' ? 'Nessuna runa da esportare!' : 'Errore nella creazione della PNG.', '❌');
+                showToast(error.message === 'empty' ? 'Nessuna runa da esportare!' : 'Errore nella creazione della PNG.');
             }
         }
 
         function copyRunes() {
             const text = document.getElementById('rune-output').textContent;
             if (!document.getElementById('output-text').value) {
-                showToast('Nessuna runa da copiare!', '⚠️');
+                showToast('Nessuna runa da copiare!');
                 return;
             }
             const temp = document.createElement('textarea');
@@ -524,9 +482,9 @@
             temp.select();
             try {
                 document.execCommand('copy');
-                showToast('Rune copiate negli appunti!', '📋');
+                showToast('Rune copiate negli appunti!');
             } catch (err) {
-                showToast('Impossibile copiare automaticamente', '❌');
+                showToast('Impossibile copiare automaticamente');
             }
             temp.remove();
         }
@@ -710,8 +668,7 @@
             if (!input.trim()) {
                 document.getElementById('output-text').value = '';
                 updateRunes();
-                document.getElementById('status-msg').textContent = 'Inserisci del testo da tradurre.';
-                return;
+                    return;
             }
 
             // Mantiene spazi, righe e punteggiatura; ogni token alfabetico,
@@ -723,8 +680,6 @@
 
             document.getElementById('output-text').value = result;
             updateRunes();
-            document.getElementById('status-msg').textContent = 'Traduzione runica completata con successo!';
-            showToast('Traduzione completata!', '⚔️');
         }
 
         // Allow live translation on Enter or typing if desired, or manual button click
