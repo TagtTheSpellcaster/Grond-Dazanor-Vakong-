@@ -633,7 +633,7 @@
                     .replace(/ch/g, '\u0002')       // ch duro -> k
                     .replace(/sc(?=i)/g, '\u0003')   // sc dolce, conserva la i
                     .replace(/gl(?=i)/g, '\u0004')   // gl dolce, conserva la i
-                    .replace(/(?<=\u0003)i/g, '\u0008')
+                    .replace(/(?<=\u0003)i/g, '\u000A') // sci: la i dolce occupa uno slot vocalico
                     .replace(/(?<=\u0004)i/g, '\u0008')
                     .replace(/c(?=[ei])/g, '\u0006')  // c dolce
                     .replace(/g(?=[ei])/g, '\u0007') // g dolce
@@ -646,8 +646,8 @@
                 // Conta le vocali. La i del gruppo gli interno non è vocalica.
                 const vowelPositions = [];
                 for (let i = 0; i < w.length; i++) {
-                    if (w[i] === '\u0009') {
-                        // La i di appoggio conta nella sequenza, ma non viene trasformata.
+                    if (w[i] === '\u0009' || w[i] === '\u000A') {
+                        // La i di ci, gi e sci resta scritta, ma riceve anche la vocale trasformata.
                         vowelPositions.push(i);
                         continue;
                     }
@@ -661,12 +661,16 @@
                 for (let i = 0; i < vowelPositions.length; i++) {
                     const pos = vowelPositions[i];
                     const sourceVowel = chars[pos];
-                    // La i ortografica conserva il proprio valore, pur occupando il suo posto.
-                    if (sourceVowel === '\u0009') continue;
                     let target = targets[i];
-                    // La a immediatamente successiva alla i di appoggio in ci/gi
-                    // non subisce l'inversione a -> o della regola 4.
-                    const followsSoftCiGi = pos > 0 && chars[pos - 1] === '\u0009';
+                    // La i di ci, gi e sci resta come indicatore di dolcezza e
+                    // precede la vocale trasformata assegnata alla sua posizione.
+                    if (sourceVowel === '\u0009' || sourceVowel === '\u000A') {
+                        chars[pos] = 'i' + target;
+                        continue;
+                    }
+                    // La a immediatamente successiva a ci, gi o sci non subisce
+                    // l'inversione a -> o della regola 4.
+                    const followsSoftCiGi = pos > 0 && (chars[pos - 1] === '\u0009' || chars[pos - 1] === '\u000A');
                     if (sourceVowel === 'a' && target === 'a' && !followsSoftCiGi) target = 'o';
                     else if (sourceVowel === 'o' && target === 'o') target = 'a';
                     chars[pos] = target;
