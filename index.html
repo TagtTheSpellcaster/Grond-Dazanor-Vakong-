@@ -670,7 +670,7 @@
                     }
                     // La a immediatamente successiva a ci, gi o sci non subisce
                     // l'inversione a -> o della regola 4.
-                    const followsSoftCiGi = pos > 0 && (chars[pos - 1] === '\u0009' || chars[pos - 1] === '\u000A');
+                    const followsSoftCiGi = pos > 0 && (w[pos - 1] === '\u0009' || w[pos - 1] === '\u000A');
                     if (sourceVowel === 'a' && target === 'a' && !followsSoftCiGi) target = 'o';
                     else if (sourceVowel === 'o' && target === 'o') target = 'a';
                     chars[pos] = target;
