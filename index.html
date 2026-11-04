@@ -7,7 +7,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for Rustic/Viking aesthetic -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=MedievalSharp&family=Special+Elite&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Cinzel:wght@400;600;700;900&family=Libre+Baskerville:wght@400;700&family=MedievalSharp&family=Special+Elite&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -16,6 +16,8 @@
                         viking: ['"MedievalSharp"', 'serif'],
                         cinzel: ['"Cinzel"', 'serif'],
                         mono: ['"Special Elite"', 'monospace'],
+                        italian: ['"Libre Baskerville"', 'serif'],
+                        vakongu: ['"Caesar Dressing"', 'cursive'],
                     },
                     colors: {
                         rune: {
@@ -143,7 +145,7 @@
                     <span>⚔️ Testo in Italiano</span>
                     <span class="text-xs text-rune-ironlight font-mono">Inserisci frase</span>
                 </label>
-                <textarea id="input-text" rows="5" placeholder="Scrivi qui la tua frase in italiano (es. Vikingo, tavolo, casa)..." class="w-full bg-rune-wood text-rune-parchment placeholder-rune-iron p-4 rounded-lg rune-border focus:outline-none focus:border-rune-gold transition font-mono text-base resize-y"></textarea>
+                <textarea id="input-text" rows="5" placeholder="Scrivi qui la tua frase in italiano (es. Vikingo, tavolo, casa)..." class="w-full bg-rune-wood text-rune-parchment placeholder-rune-iron p-4 rounded-lg rune-border focus:outline-none focus:border-rune-gold transition font-italian text-base resize-y"></textarea>
                 <div class="flex justify-between items-center">
                     <button onclick="clearText()" class="text-xs font-mono text-rune-iron hover:text-rune-ironlight transition cursor-pointer">
                         Cancella testo
@@ -162,7 +164,7 @@
                         📋 Copia
                     </button>
                 </label>
-                <textarea id="output-text" rows="5" readonly placeholder="La traduzione comparirà qui..." class="w-full bg-rune-wood text-rune-gold font-bold placeholder-rune-iron p-4 rounded-lg rune-border focus:outline-none font-mono text-base resize-y selection:bg-amber-700 selection:text-white"></textarea>
+                <textarea id="output-text" rows="5" readonly placeholder="La traduzione comparirà qui..." class="w-full bg-rune-wood text-rune-gold font-bold placeholder-rune-iron p-4 rounded-lg rune-border focus:outline-none font-vakongu text-base resize-y selection:bg-amber-700 selection:text-white"></textarea>
                 <div class="flex justify-between items-center">
                     <span class="text-xs font-mono text-rune-ironlight" id="status-msg">Pronto alla battaglia linguistica.</span>
                     <span class="text-xs font-mono text-rune-iron">Alfabeto a - o - ü</span>
