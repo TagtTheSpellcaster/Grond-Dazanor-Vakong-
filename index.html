@@ -66,6 +66,41 @@
             min-height: 7rem;
         }
 
+        /* Lastra di pietra: finitura generata in CSS, senza file esterni. */
+        .stone-surface {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            color: #e4c879;
+            background-color: #45433e;
+            background-image:
+                radial-gradient(ellipse at 18% 22%, rgba(255,255,255,.16), transparent 34%),
+                radial-gradient(ellipse at 82% 76%, rgba(0,0,0,.34), transparent 42%),
+                linear-gradient(135deg, #68655d 0%, #4b4943 28%, #393833 62%, #555149 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+            border: 3px solid #777166;
+            box-shadow: inset 0 2px 7px rgba(255,255,255,.16), inset 0 -12px 24px rgba(0,0,0,.42), 0 8px 24px rgba(0,0,0,.55);
+            text-shadow: 0 2px 1px rgba(0,0,0,.8), 0 0 8px rgba(226,190,103,.18);
+        }
+
+        .rune-choice {
+            border: 1px solid #8b7650;
+            background: linear-gradient(180deg, #3d3328, #211b16);
+            color: #c9b88e;
+            padding: .55rem .85rem;
+            border-radius: .4rem;
+            font: 600 .7rem "Special Elite", monospace;
+            letter-spacing: .04em;
+            transition: all .18s ease;
+        }
+        .rune-choice[aria-pressed="true"] {
+            color: #17130e;
+            background: linear-gradient(180deg, #e1c77e, #aa8740);
+            border-color: #f1d994;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,.45), 0 0 10px rgba(212,175,55,.25);
+        }
+        .rune-choice:hover { border-color: #e1c77e; }
+
         .btn-viking {
             background: linear-gradient(135deg, #3d2f24 0%, #221a14 100%);
             border: 2px solid #d4af37;
@@ -190,18 +225,21 @@
                 <label for="rune-alphabet" class="text-rune-gold font-bold uppercase tracking-wider text-sm">
                     ᚠ Traslitterazione runica
                 </label>
-                <div class="flex items-center gap-3">
-                    <label for="rune-alphabet" class="text-xs font-mono text-rune-ironlight">Alfabeto</label>
-                    <select id="rune-alphabet" onchange="updateRunes()" class="bg-rune-wood text-rune-parchment border border-rune-border rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-rune-gold">
-                        <option value="elder">Elder Futhark</option>
-                        <option value="younger">Younger Futhark</option>
-                    </select>
-                    <button onclick="copyRunes()" class="text-xs font-mono text-rune-gold hover:text-rune-goldlight transition cursor-pointer">
-                        📋 Copia rune
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-mono text-rune-ironlight mr-1">Alfabeto</span>
+                    <div class="flex gap-2" role="group" aria-label="Seleziona alfabeto runico">
+                        <button type="button" id="elder-button" class="rune-choice" aria-pressed="true" onclick="setRuneAlphabet('elder')">Elder Futhark</button>
+                        <button type="button" id="younger-button" class="rune-choice" aria-pressed="false" onclick="setRuneAlphabet('younger')">Younger Futhark</button>
+                    </div>
+                    <button onclick="copyRunes()" class="text-xs font-mono text-rune-gold hover:text-rune-goldlight transition cursor-pointer px-2 py-2">
+                        📋 Copia testo
+                    </button>
+                    <button onclick="copyRunesAsImage()" class="btn-viking text-xs font-mono px-3 py-2 rounded cursor-pointer">
+                        ▧ Copia come immagine
                     </button>
                 </div>
             </div>
-            <div id="rune-output" class="runic-output w-full bg-rune-wood text-rune-gold p-4 rounded-lg rune-border" aria-live="polite" aria-label="Traslitterazione in rune">La traslitterazione comparirà qui...</div>
+            <div id="rune-output" class="runic-output stone-surface w-full p-4 sm:p-6 rounded-lg" aria-live="polite" aria-label="Traslitterazione in rune">La traslitterazione comparirà qui...</div>
             <p class="text-xs font-mono text-rune-ironlight">Conversione grafica del testo Vakongü in caratteri Unicode. La scelta dell’alfabeto non modifica la traduzione.</p>
         </section>
 
@@ -324,13 +362,154 @@
             }).join('');
         }
 
+        let currentRuneAlphabet = 'elder';
+
+        function setRuneAlphabet(alphabet) {
+            currentRuneAlphabet = alphabet === 'younger' ? 'younger' : 'elder';
+            document.getElementById('elder-button').setAttribute('aria-pressed', String(currentRuneAlphabet === 'elder'));
+            document.getElementById('younger-button').setAttribute('aria-pressed', String(currentRuneAlphabet === 'younger'));
+            updateRunes();
+        }
+
         function updateRunes() {
             const vakongu = document.getElementById('output-text').value;
-            const alphabet = document.getElementById('rune-alphabet').value;
             const output = document.getElementById('rune-output');
             output.textContent = vakongu
-                ? transliterateRunes(vakongu, alphabet)
+                ? transliterateRunes(vakongu, currentRuneAlphabet)
                 : 'La traslitterazione comparirà qui...';
+        }
+
+        // Genera una PNG autonoma della lastra, pronta per gli appunti o il download.
+        async function createRunicImageBlob() {
+            const runes = document.getElementById('output-text').value
+                ? transliterateRunes(document.getElementById('output-text').value, currentRuneAlphabet)
+                : '';
+            if (!runes) throw new Error('empty');
+
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const width = 1800;
+            const margin = 110;
+            const fontSize = 76;
+            const lineHeight = 112;
+            const maxTextWidth = width - margin * 2;
+
+            ctx.font = fontSize + 'px "Noto Sans Runic", "Segoe UI Historic", "Noto Sans", serif';
+            if ('letterSpacing' in ctx) ctx.letterSpacing = '5px';
+
+            const lines = [];
+            for (const paragraph of runes.split('\n')) {
+                let line = '';
+                for (const char of Array.from(paragraph)) {
+                    const candidate = line + char;
+                    if (line && ctx.measureText(candidate).width > maxTextWidth) {
+                        lines.push(line);
+                        line = char;
+                    } else {
+                        line = candidate;
+                    }
+                }
+                lines.push(line);
+            }
+
+            const headerHeight = 130;
+            const footerHeight = 90;
+            const height = Math.max(440, margin + headerHeight + lines.length * lineHeight + footerHeight);
+            canvas.width = width;
+            canvas.height = height;
+
+            const g = ctx.createLinearGradient(0, 0, width, height);
+            g.addColorStop(0, '#77746b');
+            g.addColorStop(.32, '#55534c');
+            g.addColorStop(.7, '#3d3c37');
+            g.addColorStop(1, '#666258');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, width, height);
+
+            // Grana minerale e piccole inclusioni, generate localmente.
+            for (let i = 0; i < 42000; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const alpha = Math.random() * .11;
+                const light = Math.random() > .52;
+                ctx.fillStyle = light ? 'rgba(255,245,220,' + alpha + ')' : 'rgba(0,0,0,' + alpha + ')';
+                const size = Math.random() * 2.8 + .35;
+                ctx.fillRect(x, y, size, size);
+            }
+
+            // Cornice incisa.
+            ctx.strokeStyle = 'rgba(20,18,15,.72)';
+            ctx.lineWidth = 12;
+            ctx.strokeRect(34, 34, width - 68, height - 68);
+            ctx.strokeStyle = 'rgba(221,207,169,.42)';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(52, 52, width - 104, height - 104);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(231,215,176,.72)';
+            ctx.font = '600 30px "Cinzel", serif';
+            ctx.letterSpacing = '7px';
+            ctx.fillText('GRONDÜ DAZANORÜ VAKONGÜ', width / 2, 112);
+
+            ctx.font = fontSize + 'px "Noto Sans Runic", "Segoe UI Historic", "Noto Sans", serif';
+            if ('letterSpacing' in ctx) ctx.letterSpacing = '5px';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            const textHeight = lines.length * lineHeight;
+            let y = headerHeight + (height - headerHeight - footerHeight - textHeight) / 2 + lineHeight / 2;
+
+            ctx.shadowColor = 'rgba(0,0,0,.85)';
+            ctx.shadowBlur = 3;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 4;
+            ctx.fillStyle = '#e8ce85';
+            for (const line of lines) {
+                ctx.fillText(line, margin, y);
+                y += lineHeight;
+            }
+            ctx.shadowColor = 'transparent';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
+            ctx.font = '22px "Cinzel", serif';
+            ctx.fillStyle = 'rgba(231,215,176,.65)';
+            ctx.letterSpacing = '4px';
+            ctx.fillText(currentRuneAlphabet === 'elder' ? 'ELDER FUTHARK' : 'YOUNGER FUTHARK', width / 2, height - 76);
+
+            return new Promise((resolve, reject) => {
+                canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('PNG non generata')), 'image/png');
+            });
+        }
+
+        async function copyRunesAsImage() {
+            if (!document.getElementById('output-text').value) {
+                showToast('Nessuna runa da esportare!', '⚠️');
+                return;
+            }
+            try {
+                const blob = await createRunicImageBlob();
+                if (navigator.clipboard && window.ClipboardItem) {
+                    try {
+                        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+                        showToast('Immagine runica copiata negli appunti!', '▧');
+                        return;
+                    } catch (clipboardError) {
+                        // Se la clipboard immagini non è disponibile, passa al download.
+                    }
+                }
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'traslitterazione-runica.png';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1500);
+                showToast('PNG scaricata: puoi inserirla nel programma di grafica.', '▧');
+            } catch (error) {
+                showToast(error.message === 'empty' ? 'Nessuna runa da esportare!' : 'Errore nella creazione della PNG.', '❌');
+            }
         }
 
         function copyRunes() {
