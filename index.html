@@ -581,6 +581,7 @@
                 // I nessi sono protetti prima della trasformazione vocalica.
                 // I token privati sono consonanti e non vengono conteggiati.
                 let w = lower
+                    .replace(/qu/g, '\u000B')       // qu è un unico grafema: resta integro e non conta come vocale
                     .replace(/gh/g, '\u0001')       // gh duro -> g
                     .replace(/ch/g, '\u0002')       // ch duro -> k
                     .replace(/sc(?=i)/g, '\u0003')   // sc dolce, conserva la i
@@ -629,6 +630,7 @@
                 }
 
                 let result = chars.join('')
+                    .replace(/\u000B/g, 'qu')
                     .replace(/\u0001/g, 'g')
                     .replace(/\u0002/g, 'k')
                     .replace(/\u0003/g, 'sc')
