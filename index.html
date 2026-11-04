@@ -368,10 +368,7 @@
                     .replace(/c(?=[ei])/g, '\u0006')  // c dolce
                     .replace(/g(?=[ei])/g, '\u0007') // g dolce
                     .replace(/c(?=[aouàòù])/g, 'k')  // c dura
-                    .replace(/g(?=[aouàòù])/g, '\u0005') // g dura
-                    // La i dopo c/g dolce è un segno ortografico, non una vocale.
-                    .replace(/(?<=\u0006)i/g, '\u0008')
-                    .replace(/(?<=\u0007)i/g, '\u0008');
+                    .replace(/g(?=[aouàòù])/g, '\u0005'); // g dura
 
                 // Conta le vocali. La i del gruppo gli interno non è vocalica.
                 const vowelPositions = [];
